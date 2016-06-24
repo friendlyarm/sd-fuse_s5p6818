@@ -21,18 +21,22 @@
 # base setup
 
 BASE_URL=http://112.124.9.243/dvdfiles
-OPT_URL=http://wiki.friendlyarm.com/s5p6818/download
-BOARD=s5p6818
+OPT_URL=http://wiki.friendlyarm.com/nanopct3/download/
+BOARD=S5P6818/images-for-eflasher
 
 TARGET=${1,,}
 
 case ${TARGET} in
 android)
 	ROMFILE=android-lollipop-images.tgz;;
+core-qte)
+	ROMFILE=core-qte-images.tgz;;
 debian)
 	ROMFILE=debian-jessie-images.tgz;;
+eflasher)
+	ROMFILE=emmc-flasher-images.tgz;;
 *)
-	echo "Usage: $0 <android|debian>"
+	echo "Usage: $0 <android|core-qte|debian>"
 	exit 1
 esac
 
