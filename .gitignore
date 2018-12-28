@@ -23,8 +23,10 @@
 /debian*
 /eflasher
 /lubuntu*
+/friendlycore*
 /android*-images.tgz*
 /core-qte-images.tgz*
+/friendlycore-arm64-images.tgz*
 /debian*-images.tgz*
 /emmc-flasher-images.tgz*
 /lubuntu-desktop-images.tgz*

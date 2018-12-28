@@ -29,16 +29,16 @@ TARGET=${1,,}
 case ${TARGET} in
 android)
 	ROMFILE=android-lollipop-images.tgz;;
-core-qte)
-	ROMFILE=core-qte-images.tgz;;
-core-qte-arm64)
-	ROMFILE=core-qte-arm64-images.tgz;;
+friendlycore)
+	ROMFILE=friendlycore-images.tgz;;
+friendlycore-arm64)
+	ROMFILE=friendlycore-arm64-images.tgz;;
 lubuntu)
 	ROMFILE=lubuntu-desktop-images.tgz;;
 eflasher)
 	ROMFILE=emmc-flasher-images.tgz;;
 *)
-	echo "Usage: $0 <android|core-qte|lubuntu|eflasher>"
+	echo "Usage: $0 <android|friendlycore|lubuntu|eflasher>"
 	exit 1
 esac
 
