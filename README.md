@@ -118,6 +118,7 @@ mkdir -p /mnt/lubuntu-boot
 mount -t ext4 -o loop ../lubuntu/r.img /mnt/lubuntu-boot
 cp arch/arm64/boot/Image /mnt/lubuntu-boot
 cp arch/arm64/boot/dts/nexell/s5p6818-nanopi3-rev*.dtb /mnt/lubuntu-boot
+../tools/make_ext4fs -s -l 67108864 -a root -L boot ../lubuntu/boot.img /mnt/lubuntu-boot
 umount /mnt/lubuntu-boot
 rm ../lubuntu/r.img
 
@@ -127,6 +128,7 @@ mkdir -p /mnt/friendlycore-arm64-boot
 mount -t ext4 -o loop ../friendlycore-arm64/r.img /mnt/friendlycore-arm64-boot
 cp arch/arm64/boot/Image /mnt/friendlycore-arm64-boot
 cp arch/arm64/boot/dts/nexell/s5p6818-nanopi3-rev*.dtb /mnt/friendlycore-arm64-boot
+../tools/make_ext4fs -s -l 67108864 -a root -L boot ../friendlycore-arm64/boot.img /mnt/friendlycore-arm64-boot
 umount /mnt/friendlycore-arm64-boot
 rm ../friendlycore-arm64/r.img
 ```
