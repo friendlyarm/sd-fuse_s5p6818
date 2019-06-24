@@ -77,14 +77,14 @@ fi
 # Get target OS
 
 true ${TARGET_OS:=${2,,}}
+PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${2,,} in
 friendlycore* | lubuntu* | eflasher)
-	PARTMAP=./${TARGET_OS}/partmap.txt
 	;;
 *)
 	TARGET_OS=android
-	PARTMAP=./${TARGET_OS}/partmap.txt
+	
 	if [ ! -z ${ANDROID_PRODUCT_OUT} ]; then
 		PARTMAP=${ANDROID_PRODUCT_OUT}/partmap.txt
 	fi
@@ -92,9 +92,18 @@ friendlycore* | lubuntu* | eflasher)
 esac
 
 if [[ ! -z $2 && ! -f ${PARTMAP} ]]; then
-	echo -n "Warn: Image not found for ${TARGET_OS^}, download now (Y/N)? "
+	cat << EOF
+Warn: Image not found for ${TARGET_OS^}
+----------------
+you may download them from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
+the image files are stored in a directory called images-for-eflasher, for example:
+    tar xvzf ../NETDISK/images-for-eflasher/friendlycore-arm64-images.tgz
+    sudo ./fusing.sh /dev/sdX friendlycore-arm64
+----------------
+Or, download from http (Y/N)?
+EOF
 
-	while read -r -n 1 -t 10 -s USER_REPLY; do
+	while read -r -n 1 -t 3600 -s USER_REPLY; do
 		if [[ ${USER_REPLY} = [Nn] ]]; then
 			echo ${USER_REPLY}
 			exit 1
@@ -198,6 +207,7 @@ else
 		${SD_TUNEFS} /dev/${DEV_NAME};;
 	friendlycore* | lubuntu*)
 		sleep 1
+        echo "### try to resize2fs: /dev/${DEV_PART}"
 		resize2fs -f /dev/${DEV_PART};;
 	esac
 fi

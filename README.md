@@ -48,13 +48,13 @@ sudo ./mkimage.sh friendlycore-arm64
 ```
 The following file will be generated:  
 ```
-s5p6818-friendly-core-xenial-4.4-arm64-$(date +%Y%m%d).img
+out/s5p6818-friendly-core-xenial-4.4-arm64-$(date +%Y%m%d).img
 ```
 You can use dd to burn this file into an sd card:
 ```
-dd if=s5p6818-friendly-core-xenial-4.4-arm64-$(date +%Y%m%d).img of=/dev/sdX bs=1M
+dd if=out/s5p6818-friendly-core-xenial-4.4-arm64-$(date +%Y%m%d).img of=/dev/sdX bs=1M
 ```
-## Build a package similar to s5p6818-eflasher-friendlycore-xenial-4.4-arm64-YYYYMMDD.img
+## Build an sdcard-to-emmc image (eflasher rom)
 Enable exFAT file system support on Ubuntu:
 ```
 sudo apt-get install exfat-fuse exfat-utils
@@ -65,17 +65,15 @@ git clone https://github.com/friendlyarm/sd-fuse_s5p6818.git
 cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/S5P6818/images-for-eflasher/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
-sudo ./mkimage.sh eflasher
-DEV=`losetup -f`
-losetup ${DEV} s5p6818-eflasher-$(date +%Y%m%d).img
-partprobe ${DEV}
-sudo mkfs.exfat ${DEV}p1 -n FriendlyARM
-mkdir -p /mnt/exfat
-mount -t exfat ${DEV}p1 /mnt/exfat
-wget http://112.124.9.243/dvdfiles/S5P6818/images-for-eflasher/friendlycore-arm64-images.tgz
-tar xzf friendlycore-arm64-images.tgz -C /mnt/exfat
-umount /mnt/exfat
-losetup -d ${DEV}
+sudo ./mk-emmc-image.sh friendlycore
+```
+The following file will be generated:  
+```
+out/s5p6818-eflasher-friendlycore-bionic-4.4-yyyymmdd.img
+```
+You can use dd to burn this file into an sd card:
+```
+dd if=out/out/s5p6818-eflasher-friendlycore-bionic-4.4-yyyymmdd.img of=/dev/sdX bs=1M
 ```
 
 ## Replace the file you compiled
@@ -105,32 +103,14 @@ tar xzf friendlycore-arm64-images.tgz
 Build kernel:
 ```
 cd sd-fuse_s5p6818
-git clone https://github.com/friendlyarm/linux.git -b nanopi2-v4.4.y --depth 1
-cd linux
-touch .scmversion
-export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin:$PATH
-make ARCH=arm64 nanopi3_linux_defconfig
-make ARCH=arm64
+git clone https://github.com/friendlyarm/linux.git -b nanopi2-v4.4.y --depth 1 out/kernel-s5p6818
 
 # lubuntu
-simg2img ../lubuntu/boot.img ../lubuntu/r.img
-mkdir -p /mnt/lubuntu-boot
-mount -t ext4 -o loop ../lubuntu/r.img /mnt/lubuntu-boot
-cp arch/arm64/boot/Image /mnt/lubuntu-boot
-cp arch/arm64/boot/dts/nexell/s5p6818-nanopi3-rev*.dtb /mnt/lubuntu-boot
-../tools/make_ext4fs -s -l 67108864 -a root -L boot ../lubuntu/boot.img /mnt/lubuntu-boot
-umount /mnt/lubuntu-boot
-rm ../lubuntu/r.img
+./build-kernel.sh lubuntu
 
 # friendlycore-arm64
-simg2img ../friendlycore-arm64/boot.img ../friendlycore-arm64/r.img
-mkdir -p /mnt/friendlycore-arm64-boot
-mount -t ext4 -o loop ../friendlycore-arm64/r.img /mnt/friendlycore-arm64-boot
-cp arch/arm64/boot/Image /mnt/friendlycore-arm64-boot
-cp arch/arm64/boot/dts/nexell/s5p6818-nanopi3-rev*.dtb /mnt/friendlycore-arm64-boot
-../tools/make_ext4fs -s -l 67108864 -a root -L boot ../friendlycore-arm64/boot.img /mnt/friendlycore-arm64-boot
-umount /mnt/friendlycore-arm64-boot
-rm ../friendlycore-arm64/r.img
+./build-kernel.sh friendlycore-arm64
+
 ```
 Build uboot:
 ```
@@ -146,60 +126,29 @@ cp fip-nonsecure.img ../friendlycore-arm64/
 ```
 
 ### Custom rootfs for Lubuntu, FriendlyCore
-#### Custom rootfs in the bootable SD card
 Use FriendlyCore as an example:
 ```
 git clone https://github.com/friendlyarm/sd-fuse_s5p6818.git
 cd sd-fuse_s5p6818
-sudo ./mkimage.sh friendlycore-arm64
-DEV=`losetup -f`
-losetup ${DEV} s5p6818-friendly-core-xenial-4.4-arm64-$(date +%Y%m%d).img
-partprobe ${DEV}
-mkdir -p /mnt/rootfs
-mount -t ext4 ${DEV}p2 /mnt/rootfs
-```
-Now,  Change something under /mnt/rootfs directory, like this:
-```
-echo hello > /mnt/rootfs/root/welcome.txt
-```
-Save and release resources:
-```
-umount /mnt/rootfs
-losetup -d ${DEV}
-```
-burn to sd card:
-```
-dd if=s5p6818-friendly-core-xenial-4.4-arm64-$(date +%Y%m%d).img of=/dev/sdX bs=1M
-```
-#### Custom rootfs for eMMC
-Use FriendlyCore as an example, extract rootfs from rootfs.img:
-```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818.git
-cd sd-fuse_s5p6818
-wget http://112.124.9.243/dvdfiles/S5P6818/images-for-eflasher/friendlycore-arm64-images.tgz
-tar xzf friendlycore-arm64-images.tgz
-simg2img friendlycore-arm64/rootfs.img friendlycore-arm64/r.img
-mkdir -p /mnt/rootfs
-mount -t ext4 -o loop friendlycore-arm64/r.img /mnt/rootfs
-mkdir rootfs
-cp -af /mnt/rootfs/* rootfs
-umount /mnt/rootfs
-rm friendlycore-arm64/r.img
+wget http://112.124.9.243/dvdfiles/S5P6818/rootfs/rootfs-friendlycore-YYMMDD.tgz
+tar xzf rootfs-friendlycore-YYMMDD.tgz
 ```
 Now,  change something under rootfs directory, like this:
 ```
-echo hello > rootfs/root/welcome.txt  
+echo hello > friendlycore/rootfs/root/welcome.txt  
 ```
-Remake rootfs.img  with the make_ext4fs utility:
+Remake rootfs.img:
 ```
-./tools/make_ext4fs -s -l 5368709120 -a root -L rootfs rootfs.img rootfs
-cp rootfs.img friendlycore-arm64/
+./build-rootfs-img.sh friendlycore/rootfs friendlycore/rootfs.img
 ```
-One thing you should be aware of is that the size of the .img file needs to be larger than the rootfs directory size, 
-below are the image size values for each system we've provided:  
-eflasher: 1604321280  
-friendlycore: 5368709120  
-lubuntu: 5368709120  
+Make sdboot image:
+```
+sudo ./mk-sd-image.sh friendlycore
+```
+or make sd-to-emmc image (eflasher rom):
+```
+sudo ./mk-emmc-image.sh friendlycore
+```
   
 ### Build Android5
 ```

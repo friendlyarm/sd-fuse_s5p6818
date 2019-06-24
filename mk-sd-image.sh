@@ -24,6 +24,15 @@ if [ $(id -u) -ne 0 ]; then
 	exit
 fi
 
+function usage() {
+       echo "Usage: $0 <friendlycore|lubuntu|android|eflasher>"
+       exit 0
+}
+
+if [ -z $1 ]; then
+    usage
+fi
+
 # ----------------------------------------------------------
 # Get platform, target OS
 
@@ -31,10 +40,11 @@ true ${SOC:=s5p6818}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-friendlycore* | lubuntu* | eflasher)
+friendlycore* | lubuntu* | android | eflasher)
 	;;
 *)
-	TARGET_OS=android ;;
+	echo "Error: Unsupported target OS: ${TARGET_OS}"
+	exit 0
 esac
 
 # ----------------------------------------------------------
@@ -43,9 +53,6 @@ esac
 case ${TARGET_OS} in
 friendlycore)
 	RAW_FILE=${SOC}-friendly-core-xenial-4.4-armhf-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-friendlycore-arm64)
-	RAW_FILE=${SOC}-friendly-core-xenial-4.4-arm64-$(date +%Y%m%d).img
 	RAW_SIZE_MB=7800 ;;
 lubuntu)
 	RAW_FILE=${SOC}-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img
@@ -60,6 +67,13 @@ eflasher)
 	RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
 	RAW_SIZE_MB=7800 ;;
 esac
+
+OUT=out
+if [ ! -d $OUT ]; then
+	echo "path not found: $PWD/$OUT"
+	exit 1
+fi
+RAW_FILE=${OUT}/${RAW_FILE}
 
 BLOCK_SIZE=1024
 let RAW_SIZE=(${RAW_SIZE_MB}*1000*1000)/${BLOCK_SIZE}
@@ -103,7 +117,7 @@ fi
 # ----------------------------------------------------------
 # Fusing all
 
-true ${SD_FUSING:=./fusing.sh}
+true ${SD_FUSING:=$(dirname $0)/fusing.sh}
 
 ${SD_FUSING} ${LOOP_DEVICE} ${TARGET_OS}
 RET=$?
