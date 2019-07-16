@@ -44,7 +44,7 @@ sudo ./fusing.sh /dev/sdX friendlycore-arm64
 ```
 or build an sd card image:
 ```
-sudo ./mkimage.sh friendlycore-arm64
+sudo ./mk-sd-image.sh friendlycore-arm64
 ```
 The following file will be generated:  
 ```
