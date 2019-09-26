@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -17,15 +18,8 @@
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-	echo "Re-running script under sudo..."
-	sudo "$0" "$@"
-	exit
-fi
-
 function usage() {
-       echo "Usage: $0 <friendlycore|lubuntu|android|eflasher>"
+       echo "Usage: $0 <friendlycore-arm64|friendlycore|lubuntu|android|android7|friendlywrt|eflasher>"
        exit 0
 }
 
@@ -40,33 +34,57 @@ true ${SOC:=s5p6818}
 true ${TARGET_OS:=${1,,}}
 
 case ${TARGET_OS} in
-friendlycore* | lubuntu* | android | eflasher)
+friendlycore* | lubuntu* | android | android7 | friendlywrt | eflasher)
 	;;
 *)
 	echo "Error: Unsupported target OS: ${TARGET_OS}"
 	exit 0
 esac
 
+
+# Automatically re-run script under sudo if not root
+if [ $(id -u) -ne 0 ]; then
+	echo "Re-running script under sudo..."
+	sudo "$0" "$@"
+	exit
+fi
+
+
+
 # ----------------------------------------------------------
 # Create zero file
 
-case ${TARGET_OS} in
-friendlycore)
-	RAW_FILE=${SOC}-friendly-core-xenial-4.4-armhf-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-lubuntu)
-	RAW_FILE=${SOC}-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-android)
-	RAW_FILE=${SOC}-android-lollipop-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-eflasher)
-	RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-*)
-	RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
-	RAW_SIZE_MB=7800 ;;
-esac
+if [ $# -eq 2 ]; then
+	RAW_FILE=$2
+	RAW_SIZE_MB=7800
+else
+	case ${TARGET_OS} in
+	friendlycore-arm64)
+		RAW_FILE=${SOC}-friendly-core-xenial-4.4-arm64-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	friendlycore)
+		RAW_FILE=${SOC}-friendly-core-xenial-4.4-armhf-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	lubuntu)
+		RAW_FILE=${SOC}-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	friendlywrt)
+		RAW_FILE=${SOC}-friendlywrt-xenial-4.4-armhf-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	android)
+		RAW_FILE=${SOC}-android-lollipop-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	android7)
+		RAW_FILE=${SOC}-android7-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	eflasher)
+		RAW_FILE=${SOC}-eflasher-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	*)
+		RAW_FILE=${SOC}-${TARGET_OS}-sd4g-$(date +%Y%m%d).img
+		RAW_SIZE_MB=7800 ;;
+	esac
+fi
 
 OUT=out
 if [ ! -d $OUT ]; then
@@ -81,7 +99,8 @@ let RAW_SIZE=(${RAW_SIZE_MB}*1000*1000)/${BLOCK_SIZE}
 echo "Creating RAW image: ${RAW_FILE} (${RAW_SIZE_MB} MB)"
 echo "---------------------------------"
 
-if [ -f ${RAW_FILE} ]; then
+
+if [ -f "${RAW_FILE}" ]; then
 	rm -f ${RAW_FILE}
 fi
 
@@ -93,7 +112,7 @@ sfdisk -u S -L -q ${RAW_FILE} 2>/dev/null << EOF
 EOF
 
 if [ $? -ne 0 ]; then
-	echo "Error: ${RAW_FILE}: Create RAW file failed"
+	echo "Error: ${RAW_FILE}: Creating RAW file failed"
 	exit 1
 fi
 
@@ -109,7 +128,7 @@ if losetup ${LOOP_DEVICE} ${RAW_FILE}; then
 	PART_DEVICE=/dev/mapper/`basename ${LOOP_DEVICE}`
 	sleep 1
 else
-	echo "Error: attach ${LOOP_DEVICE} failed, stop now."
+	echo "Error: attaching ${LOOP_DEVICE} failed, stop now."
 	rm ${RAW_FILE}
 	exit 1
 fi

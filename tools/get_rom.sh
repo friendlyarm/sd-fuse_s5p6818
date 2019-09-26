@@ -24,11 +24,15 @@ BASE_URL=http://112.124.9.243/dvdfiles
 OPT_URL=http://wiki.friendlyarm.com/nanopct3/download/
 BOARD=S5P6818/images-for-eflasher
 
-TARGET=${1,,}
+TARGET_OS=${1,,}
 
-case ${TARGET} in
+case ${TARGET_OS} in
 android)
 	ROMFILE=android-lollipop-images.tgz;;
+android7)
+	ROMFILE=android-nougat-images.tgz;;
+friendlywrt)
+	ROMFILE=friendlywrt-images.tgz;;
 friendlycore)
 	ROMFILE=friendlycore-images.tgz;;
 friendlycore-arm64)
@@ -38,7 +42,7 @@ lubuntu)
 eflasher)
 	ROMFILE=emmc-flasher-images.tgz;;
 *)
-	echo "Usage: $0 <android|friendlycore|lubuntu|eflasher>"
+	echo "Usage: $0 <android|android7|friendlywrt|friendlycore|friendlycore-arm64|lubuntu|eflasher>"
 	exit 1
 esac
 
@@ -97,7 +101,7 @@ fi
 md5sum -c ${ROMFILE}.hash.md5
 if [[ "$?" != 0 ]]; then
 	echo "Error in downloaded file, please try again, or download it by"
-	echo "bowser or other tools, URL is:"
+	echo "browser or other tools, URL is:"
 	echo "  ${BASE_URL}/${BOARD}/${ROMFILE}"
 	echo "  ${BASE_URL}/${BOARD}/${ROMFILE}.hash.md5"
 	exit 1
@@ -106,10 +110,10 @@ fi
 #----------------------------------------------------------
 # extract
 
-mkdir -p ${TARGET}
+mkdir -p ${TARGET_OS}
 
 if [ -f ${ROMFILE} ]; then
-	XOPTS="-C ${TARGET} --strip-components=1"
+	XOPTS="-C ${TARGET_OS} --strip-components=1"
 	FA_DoExec tar xzvf ${ROMFILE} ${XOPTS} || exit 1
 fi
 

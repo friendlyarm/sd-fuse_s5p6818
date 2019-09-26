@@ -16,19 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, you can access it online at
 # http://www.gnu.org/licenses/gpl-2.0.html.
-
-# Automatically re-run script under sudo if not root
-if [ $(id -u) -ne 0 ]; then
-	echo "Re-running script under sudo..."
-	sudo "$0" "$@"
-	exit
-fi
-
 # ----------------------------------------------------------
 # Checking device for fusing
 
-if [ -z $1 ]; then
-	echo "Usage: $0 DEVICE [friendlycore|friendlycore-arm64|lubuntu]"
+if [ $# -eq 0 ]; then
+	echo "Usage: $0 DEVICE [friendlycore|friendlycore-arm64|friendlywrt|lubuntu]"
 	exit 0
 fi
 
@@ -41,10 +33,10 @@ case $1 in
 	DEV_NAME=`basename $1`
 	BLOCK_CNT=`cat /sys/block/${DEV_NAME}/size` ;;&
 /dev/sd[a-z])
-	DEV_PART=${DEV_NAME}2
+	DEV_PART=${DEV_NAME}3
 	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
 /dev/mmcblk1 | /dev/loop[0-9]*)
-	DEV_PART=${DEV_NAME}p2
+	DEV_PART=${DEV_NAME}p3
 	REMOVABLE=1 ;;
 *)
 	echo "Error: Unsupported SD reader"
@@ -52,7 +44,7 @@ case $1 in
 esac
 
 if [ ${REMOVABLE} -le 0 ]; then
-	echo "Error: $1 is non-removable device. Stop."
+	echo "Error: $1 is a non-removable device. Stop."
 	exit 1
 fi
 
@@ -79,21 +71,18 @@ fi
 true ${TARGET_OS:=${2,,}}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
-case ${2,,} in
-friendlycore* | lubuntu* | eflasher)
+case ${TARGET_OS} in
+friendlycore* | lubuntu* | friendlywrt | kitkat | android | android7 | eflasher)
 	;;
 *)
-	TARGET_OS=android
-	
-	if [ ! -z ${ANDROID_PRODUCT_OUT} ]; then
-		PARTMAP=${ANDROID_PRODUCT_OUT}/partmap.txt
-	fi
-	;;
+        echo "Error: Unsupported target OS: ${TARGET_OS}"
+        exit 0
+
 esac
 
-if [[ ! -z $2 && ! -f ${PARTMAP} ]]; then
+if [[ ! -z ${TARGET_OS} && ! -f ${PARTMAP} ]]; then
 	cat << EOF
-Warn: Image not found for ${TARGET_OS^}
+Warn: Image not found for ${TARGET_OS}
 ----------------
 you may download them from the netdisk (dl.friendlyarm.com) to get a higher downloading speed,
 the image files are stored in a directory called images-for-eflasher, for example:
@@ -121,8 +110,16 @@ EOF
 	./tools/get_rom.sh ${TARGET_OS} || exit 1
 fi
 
+# Automatically re-run script under sudo if not root
+if [ $(id -u) -ne 0 ]; then
+	echo "Re-running script under sudo..."
+	sudo "$0" "$@"
+	exit
+fi
+
 # ----------------------------------------------------------
 # Get host machine
+ARCH=
 if uname -mpi | grep aarch64 >/dev/null; then
 #	EMMC=.emmc
 	ARCH=aarch64/
@@ -143,8 +140,9 @@ function fusing_bin() {
 }
 
 # umount all at first
+set +e
 umount /dev/${DEV_NAME}* > /dev/null 2>&1
-
+set -e
 if [ ! -f ${TARGET_OS}/bl1-mmcboot.bin -a ! -f ${TARGET_OS}/2ndboot.bin ]; then
 	fusing_bin ${BOOT_DIR}/bl1-mmcboot.bin      1
 	fusing_bin ${BOOT_DIR}/fip-loader.img     129
@@ -164,7 +162,10 @@ true ${FW_SETENV:=./tools/${ARCH}fw_setenv}
 true ${SD_UPDATE:=./tools/${ARCH}sd_update}
 true ${SD_TUNEFS:=./tools/sd_tune2fs.sh}
 
-[[ -z $2 && ! -f ${PARTMAP} ]] && exit 0
+[[ -z $2 && ! -f ${PARTMAP} ]] && {
+	echo "abort, args2 = $2, partmap = ${PARTMAP}"
+	exit 0
+}
 
 echo "---------------------------------"
 echo "${TARGET_OS^} filesystem fusing"
@@ -197,15 +198,15 @@ if [ -z ${ARCH} ]; then
 	partprobe /dev/${DEV_NAME} -s 2>/dev/null
 fi
 if [ $? -ne 0 ]; then
-	echo "Warn: Re-read the partition table failed"
+	echo "Warning: Re-reading the partition table failed"
 
 else
 	# optional: update uuid & label
 	case ${TARGET_OS} in
-	android)
+	android | android7)
 		sleep 1
 		${SD_TUNEFS} /dev/${DEV_NAME};;
-	friendlycore* | lubuntu*)
+	friendlycore* | lubuntu* | friendlywrt*)
 		sleep 1
         echo "### try to resize2fs: /dev/${DEV_PART}"
 		resize2fs -f /dev/${DEV_PART};;

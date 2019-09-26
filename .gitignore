@@ -6,6 +6,8 @@
 # Normal rules
 #
 
+/test/out
+/test/tmp
 /out
 *.rej
 *.orig
@@ -20,6 +22,8 @@
 /mnt
 /vendor
 /android
+/android7
+/friendlywrt*
 /core-qte*
 /debian*
 /eflasher
