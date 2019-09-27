@@ -2,7 +2,7 @@
 set -eu
 
 function has_built_uboot() {
-	if [ -f $1/bootloader.img ]; then
+	if [ -f $1/fip-nonsecure.img ]; then
 		echo 1
 	else
 		echo 0
@@ -10,8 +10,8 @@ function has_built_uboot() {
 }
 
 function has_built_kernel() {
-	local ARCH=arm
-	local KIMG=arch/${ARCH}/boot/zImage
+	local ARCH=arm64
+	local KIMG=arch/${ARCH}/boot/Image
 	if [ -f $1/${KIMG} ]; then
 		echo 1
 	else

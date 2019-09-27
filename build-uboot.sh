@@ -25,7 +25,7 @@ UBOOT_REPO=https://github.com/friendlyarm/u-boot
 UBOOT_BRANCH=nanopi2-v2016.01
 
 ARCH=arm64
-UCFG=s5p6818_nanopi3_defconfig
+UCFG=s5p6818_nanopi3_config
 CROSS_COMPILER=aarch64-linux-
 
 TOPPATH=$PWD
@@ -140,9 +140,9 @@ if [ ! -f "${INCLUDE_PY}/Python.h" ]; then
 fi  
 
 cd ${UBOOT_SRC}
-make clean
-make ${UCFG} ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILER}
-make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILER} -j$(nproc)
+make distclean
+make ${UCFG}
+make CROSS_COMPILE=${CROSS_COMPILER} -j$(nproc)
 
 if [ $? -ne 0 ]; then
 	echo "failed to build uboot."
