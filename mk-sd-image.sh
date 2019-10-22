@@ -23,7 +23,7 @@ function usage() {
        exit 0
 }
 
-if [ -z $1 ]; then
+if [ $# -eq 0 ]; then
     usage
 fi
 
