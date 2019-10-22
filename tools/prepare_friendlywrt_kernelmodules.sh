@@ -6,7 +6,7 @@ set -eu
 	exit 1
 }
 
-true ${SOC:=s5p4418}
+true ${SOC:=s5p6818}
 ROOTFS_DIR=$1
 
 MODULES_DIR=./lib/modules/4.4.172-s5p6818

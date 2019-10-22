@@ -25,26 +25,11 @@ OPT_URL=http://wiki.friendlyarm.com/nanopct3/download/
 BOARD=S5P6818/images-for-eflasher
 
 TARGET_OS=${1,,}
-
-case ${TARGET_OS} in
-android)
-	ROMFILE=android-lollipop-images.tgz;;
-android7)
-	ROMFILE=android-nougat-images.tgz;;
-friendlywrt)
-	ROMFILE=friendlywrt-images.tgz;;
-friendlycore)
-	ROMFILE=friendlycore-images.tgz;;
-friendlycore-arm64)
-	ROMFILE=friendlycore-arm64-images.tgz;;
-lubuntu)
-	ROMFILE=lubuntu-desktop-images.tgz;;
-eflasher)
-	ROMFILE=emmc-flasher-images.tgz;;
-*)
+ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
+if [ -z ${ROMFILE} ]; then
 	echo "Usage: $0 <android|android7|friendlywrt|friendlycore|friendlycore-arm64|lubuntu|eflasher>"
 	exit 1
-esac
+fi
 
 #----------------------------------------------------------
 # local functions
