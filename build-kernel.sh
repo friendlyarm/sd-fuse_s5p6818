@@ -26,7 +26,7 @@ KERNEL_REPO=https://github.com/friendlyarm/linux
 KERNEL_BRANCH=nanopi2-v4.4.y
 
 ARCH=arm64
-KCFG=nanopi3_linux_defconfig
+true ${KCFG:=nanopi3_linux_defconfig}
 KIMG=arch/${ARCH}/boot/Image
 KDTB=arch/${ARCH}/boot/dts/nexell/s5p6818-nanopi3-*.dtb
 KALL=
@@ -177,7 +177,7 @@ fi
 
 cd ${TOPPATH}
 download_img ${TARGET_OS}
-./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TARGET_OS} ${TOPPATH}/prebuilt
+KCFG=${KCFG} ./tools/update_kernel_bin_to_img.sh ${OUT} ${KERNEL_SRC} ${TARGET_OS} ${TOPPATH}/prebuilt
 
 
 if [ $? -eq 0 ]; then

@@ -19,7 +19,7 @@ true ${MKFS:="${TOP}/tools/make_ext4fs"}
 
 true ${SOC:=s5p6818}
 ARCH=arm64
-KCFG=nanopi3_linux_defconfig
+true ${KCFG:=nanopi3_linux_defconfig}
 KIMG=arch/${ARCH}/boot/Image
 KDTB=arch/${ARCH}/boot/dts/nexell/s5p6818-nanopi3-*.dtb
 KALL=
