@@ -17,6 +17,7 @@ KERNEL_DIR=$2
 BOOT_DIR=$3
 ROOTFS_DIR=$4
 PREBUILT=$5
+TARGET_OS=$6
 
 KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 
@@ -24,6 +25,30 @@ KMODULES_OUTDIR="${OUT}/output_${SOC}_kmodules"
 rsync -a --no-o --no-g ${KERNEL_DIR}/${KIMG} ${BOOT_DIR}
 rsync -a --no-o --no-g ${KERNEL_DIR}/${KDTB} ${BOOT_DIR}
 rsync -a --no-o --no-g ${PREBUILT}/boot/* ${BOOT_DIR}
+
+case ${TARGET_OS} in
+android)
+        ;;
+android7)
+        ;;
+friendlywrt)
+        rsync -a --no-o --no-g ${PREBUILT}/ramdisk/arm64/ramdisk.img ${BOOT_DIR}
+        ;;
+friendlycore)
+        rsync -a --no-o --no-g ${PREBUILT}/ramdisk/armhf/ramdisk.img ${BOOT_DIR}
+        ;;
+friendlycore-arm64)
+        rsync -a --no-o --no-g ${PREBUILT}/ramdisk/arm64/ramdisk.img ${BOOT_DIR}
+        ;;
+lubuntu)
+        rsync -a --no-o --no-g ${PREBUILT}/ramdisk/armhf/ramdisk.img ${BOOT_DIR}
+        ;;
+eflasher)
+        rsync -a --no-o --no-g ${PREBUILT}/ramdisk/armhf/ramdisk.img ${BOOT_DIR}
+        ;;
+*)
+    ROMFILE=
+esac
 
 # rootfs
 rm -rf ${ROOTFS_DIR}/lib/modules/*
