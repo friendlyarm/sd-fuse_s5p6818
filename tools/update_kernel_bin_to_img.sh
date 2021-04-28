@@ -14,6 +14,7 @@ if [ $(id -u) -ne 0 ]; then
 fi
 
 TOP=$PWD
+true ${LOGO:=}
 true ${MKFS:="${TOP}/tools/make_ext4fs"}
 true ${MKFS:="${TOP}/tools/make_ext4fs"}
 
@@ -50,6 +51,10 @@ if [ -f ${TARGET_OS}/boot.img ]; then
 
     cp ${KERNEL_BUILD_DIR}/${KIMG} ${OUT}/boot/
     cp -avf ${KERNEL_BUILD_DIR}/${KDTB} ${OUT}/boot/
+	
+	if [ -f "${LOGO}" ]; then
+		cp -avf ${LOGO} ${OUT}/boot/
+	fi
 
     ./build-boot-img.sh ${OUT}/boot ${TARGET_OS}/boot.img
     if [ $? -ne 0 ]; then
@@ -110,10 +115,8 @@ if [ -f ${TARGET_OS}/rootfs.img ]; then
             exit 1
     fi
 
-    if [ ${TARGET_OS} != "eflasher" ]; then
-        echo "IMG_SIZE=${IMG_SIZE}" > ${OUT}/${TARGET_OS}_rootfs-img.info
-        ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
-    fi
+    echo "IMG_SIZE=${IMG_SIZE}" > ${OUT}/${TARGET_OS}_rootfs-img.info
+    ${TOP}/tools/generate-partmap-txt.sh ${IMG_SIZE} ${TARGET_OS}
 else 
 	echo "not found ${TARGET_OS}/rootfs.img"
 	exit 1
