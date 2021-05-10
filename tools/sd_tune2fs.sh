@@ -20,7 +20,7 @@
 # ----------------------------------------------------------
 # Checking block device
 
-if [ $# -eq 0 ]; then
+if [ -z $1 ]; then
 	echo "Usage: sd_tune2fs.sh <SD Reader's device>"
 	exit 0
 fi
