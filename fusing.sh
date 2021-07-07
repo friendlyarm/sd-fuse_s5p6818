@@ -20,7 +20,7 @@
 # Checking device for fusing
 
 if [ $# -eq 0 ]; then
-	echo "Usage: $0 DEVICE [friendlycore|friendlycore-arm64|friendlywrt|lubuntu]"
+	echo "Usage: $0 DEVICE [friendlycore|friendlycore-arm64|friendlycore-lite-focal|friendlycore-lite-focal-arm64|friendlycore-arm64|friendlywrt|lubuntu]"
 	exit 0
 fi
 

@@ -40,6 +40,12 @@ friendlycore)
 friendlycore-arm64)
         rsync -a --no-o --no-g ${PREBUILT}/ramdisk/arm64/ramdisk.img ${BOOT_DIR}
         ;;
+friendlycore-lite-focal)
+        rsync -a --no-o --no-g ${PREBUILT}/ramdisk/arm64/ramdisk.img ${BOOT_DIR}
+        ;;
+friendlycore-lite-focal-arm64)
+        rsync -a --no-o --no-g ${PREBUILT}/ramdisk/arm64/ramdisk.img ${BOOT_DIR}
+        ;;
 lubuntu)
         rsync -a --no-o --no-g ${PREBUILT}/ramdisk/armhf/ramdisk.img ${BOOT_DIR}
         ;;

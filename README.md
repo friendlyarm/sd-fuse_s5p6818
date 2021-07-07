@@ -16,17 +16,17 @@ diff ~/before.txt ~/after.txt
 ```
 git clone https://github.com/friendlyarm/sd-fuse_s5p6818.git
 cd sd-fuse_s5p6818
-sudo ./fusing.sh /dev/sdX friendlycore
+sudo ./fusing.sh /dev/sdX friendlycore-arm64
 ```
-You can build the following OS: friendlycore, friendlycore-arm64, lubuntu, eflasher, android.  
+You can build the following OS: friendlycore, friendlycore-arm64, friendlycore-lite-focal, friendlycore-lite-focal-arm64, lubuntu, eflasher, android.  
 
 Notes:  
 fusing.sh will check the local directory for a directory with the same name as OS, if it does not exist fusing.sh will go to download it from network.  
 So you can download from the netdisk in advance, on netdisk, the images files are stored in a directory called images-for-eflasher, for example:
 ```
 cd sd-fuse_s5p6818
-tar xvzf ../images-for-eflasher/friendlycore-images.tgz
-sudo ./fusing.sh /dev/sdX friendlycore
+tar xvzf ../images-for-eflasher/friendlycore-arm64-images.tgz
+sudo ./fusing.sh /dev/sdX friendlycore-arm64
 ```
 
 ## Build an sd card image
@@ -59,21 +59,21 @@ Enable exFAT file system support on Ubuntu:
 ```
 sudo apt-get install exfat-fuse exfat-utils
 ```
-Generate the eflasher raw image, and put friendlycore image files into eflasher:
+Generate the eflasher raw image, and put friendlycore-arm64 image files into eflasher:
 ```
 git clone https://github.com/friendlyarm/sd-fuse_s5p6818.git
 cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/S5P6818/images-for-eflasher/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
-sudo ./mk-emmc-image.sh friendlycore
+sudo ./mk-emmc-image.sh friendlycore-arm64
 ```
 The following file will be generated:  
 ```
-out/s5p6818-eflasher-friendlycore-bionic-4.4-yyyymmdd.img
+out/s5p6818-eflasher-friendlycore-xenial-4.4-arm64-yyyymmdd.img
 ```
 You can use dd to burn this file into an sd card:
 ```
-dd if=out/out/s5p6818-eflasher-friendlycore-bionic-4.4-yyyymmdd.img of=/dev/sdX bs=1M
+dd if=out/out/s5p6818-eflasher-friendlycore-xenial-4.4-arm64-yyyymmdd.img of=/dev/sdX bs=1M
 ```
 
 ## Replace the file you compiled

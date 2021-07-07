@@ -13,6 +13,10 @@ friendlycore)
         ROMFILE=friendlycore-images.tgz;;
 friendlycore-arm64)
         ROMFILE=friendlycore-arm64-images.tgz;;
+friendlycore-lite-focal)
+        ROMFILE=friendlycore-lite-focal-images.tgz;;
+friendlycore-lite-focal-arm64)
+        ROMFILE=friendlycore-lite-focal-arm64-images.tgz;;
 lubuntu)
         ROMFILE=lubuntu-desktop-images.tgz;;
 eflasher)
