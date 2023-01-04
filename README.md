@@ -1,172 +1,185 @@
+
 # sd-fuse_s5p6818
-Create bootable SD card for NanoPi Fire3/NanoPC T3/NanoPC T3 Plus/NanoPi M3/Smart6818
+## Introduction
+This repository is a bunch of scripts to build bootable SD card images for FriendlyElec S5P6818 boards, the main features are as follows:
 
-## How to find the /dev name of my SD Card
-Unplug all usb devices:
-```
-ls -1 /dev > ~/before.txt
-```
-plug it in, then
-```
-ls -1 /dev > ~/after.txt
-diff ~/before.txt ~/after.txt
-```
+* Create root ﬁlesystem image from a directory
+* Build bootable SD card image
+* Easy way to compile kernel、uboot and third-party driver
+  
+*Read this in other languages: [简体中文](README_cn.md)*  
+  
+## Requirements
+* Recommended Host OS: Ubuntu 18.04 LTS (Bionic Beaver) 64-bit or Higher
+* It is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
 
-## Build friendlycore bootable SD card
-```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818.git
-cd sd-fuse_s5p6818
-sudo ./fusing.sh /dev/sdX friendlycore-arm64
-```
-You can build the following OS: friendlycore, friendlycore-arm64, friendlycore-lite-focal, friendlycore-lite-focal-arm64, lubuntu, eflasher, android.  
+## Kernel Version Support
+The sd-fuse use multiple git branches to support each version of the kernel, the current branche supported kernel version is as follows:
+* 4.4.y   
+  
+For other kernel versions, please switch to the related git branch.
+## Target board OS Supported
+*Notes: The OS name is the same as the directory name, it is written in the script so it cannot be renamed.*
 
-Notes:  
-fusing.sh will check the local directory for a directory with the same name as OS, if it does not exist fusing.sh will go to download it from network.  
-So you can download from the netdisk in advance, on netdisk, the images files are stored in a directory called images-for-eflasher, for example:
-```
-cd sd-fuse_s5p6818
-tar xvzf ../images-for-eflasher/friendlycore-arm64-images.tgz
-sudo ./fusing.sh /dev/sdX friendlycore-arm64
-```
+* lubuntu
+* friendlycore
+* friendlycore-arm64
+* friendlycore-lite-focal
+* friendlycore-lite-focal-arm64
+* android
+* android7
+* friendlywrt
 
-## Build an sd card image
-First, download and unpack:
+  
+To build an SD card image for friendlycore-arm64, for example like this:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818.git
-cd sd-fuse_s5p6818
-wget http://112.124.9.243/dvdfiles/S5P6818/images-for-eflasher/friendlycore-arm64-images.tgz
-tar xvzf friendlycore-arm64-images.tgz
-```
-Now,  Change something under the friendlycore-arm64 directory, 
-for example, replace the file you compiled, then build friendlycore-arm64 bootable SD card: 
-```
-sudo ./fusing.sh /dev/sdX friendlycore-arm64
-```
-or build an sd card image:
-```
-sudo ./mk-sd-image.sh friendlycore-arm64
-```
-The following file will be generated:  
-```
-out/s5p6818-friendly-core-xenial-4.4-arm64-$(date +%Y%m%d).img
-```
-You can use dd to burn this file into an sd card:
-```
-dd if=out/s5p6818-friendly-core-xenial-4.4-arm64-$(date +%Y%m%d).img of=/dev/sdX bs=1M
-```
-## Build an sdcard-to-emmc image (eflasher rom)
-Enable exFAT file system support on Ubuntu:
-```
-sudo apt-get install exfat-fuse exfat-utils
-```
-Generate the eflasher raw image, and put friendlycore-arm64 image files into eflasher:
-```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818.git
-cd sd-fuse_s5p6818
-wget http://112.124.9.243/dvdfiles/S5P6818/images-for-eflasher/emmc-flasher-images.tgz
-tar xzf emmc-flasher-images.tgz
-sudo ./mk-emmc-image.sh friendlycore-arm64
-```
-The following file will be generated:  
-```
-out/s5p6818-eflasher-friendlycore-xenial-4.4-arm64-yyyymmdd.img
-```
-You can use dd to burn this file into an sd card:
-```
-dd if=out/out/s5p6818-eflasher-friendlycore-xenial-4.4-arm64-yyyymmdd.img of=/dev/sdX bs=1M
-```
-
-## Replace the file you compiled
-
-### Install cross compiler and tools
-
-Install the package:
-```
-apt install liblz4-tool android-tools-fsutils
-```
-Install Cross Compiler:
-```
-git clone https://github.com/friendlyarm/prebuilts.git
-sudo mkdir -p /opt/FriendlyARM/toolchain
-sudo tar xf prebuilts/gcc-x64/aarch64-cortexa53-linux-gnu-6.4.tar.xz -C /opt/FriendlyARM/toolchain/
-```
-
-### Build U-boot and Kernel for Lubuntu, FriendlyCore
-Download image files:
-```
-cd sd-fuse_s5p6818
-wget http://112.124.9.243/dvdfiles/S5P6818/images-for-eflasher/lubuntu-desktop-images.tgz
-tar xzf lubuntu-desktop-images.tgz
-wget http://112.124.9.243/dvdfiles/S5P6818/images-for-eflasher/friendlycore-arm64-images.tgz
-tar xzf friendlycore-arm64-images.tgz
-```
-Build kernel:
-```
-cd sd-fuse_s5p6818
-git clone https://github.com/friendlyarm/linux.git -b nanopi2-v4.4.y --depth 1 out/kernel-s5p6818
-
-# lubuntu
-./build-kernel.sh lubuntu
-
-# friendlycore-arm64
-./build-kernel.sh friendlycore-arm64
-
-```
-Build uboot:
-```
-cd sd-fuse_s5p6818
-git clone https://github.com/friendlyarm/u-boot.git 
-cd u-boot
-git checkout nanopi2-v2016.01
-make s5p6818_nanopi3_defconfig
-export PATH=/opt/FriendlyARM/toolchain/6.4-aarch64/bin:$PATH
-make CROSS_COMPILE=aarch64-linux-
-cp fip-nonsecure.img ../lubuntu/
-cp fip-nonsecure.img ../friendlycore-arm64/
-```
-
-### Custom rootfs for Lubuntu, FriendlyCore
-Use FriendlyCore as an example:
-```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818.git
-cd sd-fuse_s5p6818
-wget http://112.124.9.243/dvdfiles/S5P6818/rootfs/rootfs-friendlycore-YYMMDD.tgz
-tar xzf rootfs-friendlycore-YYMMDD.tgz
-```
-Now,  change something under rootfs directory, like this:
-```
-echo hello > friendlycore/rootfs/root/welcome.txt  
-```
-Remake rootfs.img:
-```
-./build-rootfs-img.sh friendlycore/rootfs friendlycore
-```
-Make sdboot image:
-```
-sudo ./mk-sd-image.sh friendlycore
-```
-or make sd-to-emmc image (eflasher rom):
-```
-sudo ./mk-emmc-image.sh friendlycore
+./mk-sd-image.sh friendlycore-arm64
 ```
   
-### Build Android5
+## Where to download files
+The following files may be required to build SD card image:
+* kernel source code: In the directory "07_Source codes" of [NetDrive](https://download.friendlyelec.com/s5p6818), or download from [Github](https://github.com/friendlyarm/linux), the branch name is nanopi2-v4.4.y
+* uboot source code: In the directory "07_Source codes" of [NetDrive](https://download.friendlyelec.com/s5p6818), or download from [Github](https://github.com/friendlyarm/u-boot), the branch name is nanopi2-v2016.01
+* pre-built partition image: In the directory "03_Partition image files" of [NetDrive](https://download.friendlyelec.com/s5p6818), or download from [HTTP server](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher)
+* compressed root file system tar ball: In the directory "06_File systems" of [NetDrive](https://download.friendlyelec.com/s5p6818), or download from [HTTP server](http://112.124.9.243/dvdfiles/s5p6818/rootfs)
+  
+If the files are not prepared in advance, the script will automatically download the required files, but the speed may be slower due to the bandwidth of the http server.
+
+## Script Functions
+* fusing.sh: Flash the image to SD card
+* mk-sd-image.sh: Build SD card image
+* mk-emmc-image.sh: Build SD-to-eMMC image, used to install system to eMMC
+
+* build-boot-img.sh:  Create boot ﬁlesystem image(boot.img) from a directory
+
+* build-rootfs-img.sh: Create root ﬁlesystem image(rootfs.img) from a directory
+* build-kernel.sh: Compile the kernel, or kernel headers
+* build-uboot.sh: Compile uboot
+
+## Usage
+### Build your own SD card image
+*Note: Here we use friendlycore-arm64 system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher), due to the bandwidth of the http server, we recommend downloading the file from the [NetDrive](https://download.friendlyelec.com/s5p6818):
 ```
-git clone https://gitlab.com/friendlyelec/s5pxx18-android5 android5-src
-cd android5-src 
-source build/envsetup.sh
-lunch aosp_nanopi3-userdebug
-make -j8
-wget http://112.124.9.243/dvdfiles/S5P6818/images-for-eflasher/android-lollipop-images.tgz
-tar xzf android-lollipop-images.tgz
-cp out/target/product/nanopi3/boot.img \
-    out/target/product/nanopi3/cache.img \
-    out/target/product/nanopi3/userdata.img \
-    out/target/product/nanopi3/system.img \
-    out/target/product/nanopi3/partmap.txt \
-    android/
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+cd sd-fuse_s5p6818
+wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
+tar xvzf friendlycore-arm64-images.tgz
 ```
-Copy the new image files to the exfat partition of the eflasher sd card:
+After decompressing, you will get a directory named friendlycore-arm64, you can change the files in the directory as needed, for example, replace rootfs.img with your own modified version, or your own compiled kernel and uboot, finally, flash the image to the SD card by entering the following command (The below steps assume your SD card is device /dev/sdX):
 ```
-cp -af android /mnt/exfat/
+sudo ./fusing.sh /dev/sdX friendlycore-arm64
 ```
+Or, package it as an SD card image file:
+```
+./mk-sd-image.sh friendlycore-arm64
+```
+The following flashable image file will be generated, it is now ready to be used to boot the device into friendlycore-arm64:  
+```
+out/s5p6818-sd-friendly-core-xenial-4.4-arm64-YYYYMMDD.img
+```
+
+
+### Build your own SD-to-eMMC Image
+*Note: Here we use friendlycore-arm64 system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher), here you need to download the friendlycore-arm64 and eflasher [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher):
+```
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+cd sd-fuse_s5p6818
+wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
+tar xvzf friendlycore-arm64-images.tgz
+wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/emmc-flasher-images.tgz
+tar xvzf emmc-flasher-images.tgz
+```
+Then use the following command to build the SD-to-eMMC image, the autostart=yes parameter means it will automatically enter the flash process when booting:
+```
+./mk-emmc-image.sh friendlycore-arm64 autostart=yes
+```
+The following flashable image file will be generated, ready to be used to boot the device into eflasher system and then flash friendlycore-arm64 system to eMMC: 
+```
+out/s5p6818-eflasher-friendly-core-xenial-4.4-arm64-YYYYMMDD.img
+```
+
+### Build your own root filesystem image
+*Note: Here we use friendlycore-arm64 system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher):
+```
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+cd sd-fuse_s5p6818
+wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
+tar xvzf friendlycore-arm64-images.tgz
+```
+Download the compressed root file system tar ball and unzip it, the unzip command requires root privileges, so you need put sudo in front of the command:
+```
+wget http://112.124.9.243/dvdfiles/s5p6818/rootfs/rootfs-friendlycore.tgz
+sudo tar xzf rootfs-friendlycore.tgz
+```
+Change something:
+```
+sudo sh -c 'echo hello > friendlycore-arm64/rootfs/root/welcome.txt'
+```
+Make rootfs to img:
+```
+sudo ./build-rootfs-img.sh friendlycore-arm64/rootfs friendlycore-arm64
+```
+Use the new rootfs.img to build SD card image:
+```
+./mk-sd-image.sh friendlycore-arm64
+```
+Or build SD-to-eMMC image:
+```
+./mk-emmc-image.sh friendlycore-arm64
+```
+#### Tips
+
+* Using the debootstrap tool, you can customize the file system, pre-install packages, etc.
+
+
+### Compiling the Kernel
+*Note: Here we use friendlycore-arm64 system as an example*  
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher):
+```
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+cd sd-fuse_s5p6818
+wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
+tar xvzf friendlycore-arm64-images.tgz
+```
+Download the kernel source code from github, using the environment variable KERNEL_SRC to specify the local source code directory:
+```
+export KERNEL_SRC=$PWD/kernel
+git clone https://github.com/friendlyarm/linux -b nanopi2-v4.4.y --depth 1 ${KERNEL_SRC}
+```
+Customize the kernel configuration:
+```
+cd $KERNEL_SRC
+touch .scmversion
+make ARCH=arm nanopi3_linux_defconfig
+make ARCH=arm CROSS_COMPILE=arm-linux- menuconfig
+make ARCH=arm CROSS_COMPILE=arm-linux- savedefconfig
+cp defconfig ./arch/arm/configs/my_defconfig                  # Save the configuration as my_defconfig
+git add ./arch/arm/configs/my_defconfig
+cd -
+```
+Specify the configuration of the kernel using the KCFG environment variable (KERNEL_SRC specifies the source directory), and compile the kernel with your configuration:
+```
+export KERNEL_SRC=$PWD/kernel
+export KCFG=my_defconfig
+./build-kernel.sh friendlycore-arm64
+```
+
+### Compiling the u-boot
+*Note: Here we use friendlycore-arm64 system as an example* 
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher)::
+```
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+cd sd-fuse_s5p6818
+wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
+tar xvzf friendlycore-arm64-images.tgz
+```
+Download the u-boot source code from github that matches the OS version, the environment variable UBOOT_SRC is used to specify the local source code directory:
+```
+export UBOOT_SRC=$PWD/uboot
+git clone https://github.com/friendlyarm/u-boot -b nanopi2-v2016.01 --depth 1 ${UBOOT_SRC}
+./build-uboot.sh friendlycore-arm64
+```
+

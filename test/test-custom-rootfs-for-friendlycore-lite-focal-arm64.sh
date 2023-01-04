@@ -8,7 +8,7 @@ KERNEL_BRANCH=nanopi2-v4.4.y
 # hack for me
 PCNAME=`hostname`
 if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
-    HTTP_SERVER=192.168.1.9
+    HTTP_SERVER=127.0.0.1
     KERNEL_URL=git@192.168.1.5:/devel/kernel/linux.git
     KERNEL_BRANCH=nanopi2-v4.4.y
 fi
@@ -20,15 +20,15 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_s5p6818
 cd sd-fuse_s5p6818
-wget http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/friendlycore-lite-focal-arm64-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/friendlycore-lite-focal-arm64-images.tgz
 tar xzf friendlycore-lite-focal-arm64-images.tgz
-wget http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/emmc-flasher-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
-wget http://${HTTP_SERVER}/dvdfiles/S5P6818/rootfs/rootfs-friendlycore-lite-focal-arm64.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/rootfs/rootfs-friendlycore-lite-focal-arm64.tgz
 tar xzf rootfs-friendlycore-lite-focal-arm64.tgz
 echo hello > friendlycore-lite-focal-arm64/rootfs/root/welcome.txt
 (cd friendlycore-lite-focal-arm64/rootfs/root/ && {
-	wget http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/friendlycore-lite-focal-arm64-images.tgz -O deleteme.tgz
+	wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/friendlycore-lite-focal-arm64-images.tgz -O deleteme.tgz
 });
 ./build-rootfs-img.sh friendlycore-lite-focal-arm64/rootfs friendlycore-lite-focal-arm64
 

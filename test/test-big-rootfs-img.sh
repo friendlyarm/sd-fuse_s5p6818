@@ -6,7 +6,7 @@ HTTP_SERVER=112.124.9.243
 # hack for me
 PCNAME=`hostname`
 if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
-       HTTP_SERVER=192.168.1.9
+       HTTP_SERVER=127.0.0.1
 fi
 
 # clean
@@ -16,9 +16,9 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_s5p6818
 cd sd-fuse_s5p6818
-wget http://${HTTP_SERVER}/dvdfiles/s5p6818/images-for-eflasher/friendlycore-images-arm64.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/friendlycore-images-arm64.tgz
 tar xzf friendlycore-images-arm64.tgz
-wget http://${HTTP_SERVER}/dvdfiles/s5p6818/images-for-eflasher/emmc-flasher-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
 
 # make big file

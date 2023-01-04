@@ -8,7 +8,7 @@ KERNEL_BRANCH=nanopi2-v4.4.y
 # hack for me
 PCNAME=`hostname`
 if [ x"${PCNAME}" = x"tzs-i7pc" ]; then
-    HTTP_SERVER=192.168.1.9
+    HTTP_SERVER=127.0.0.1
     KERNEL_URL=git@192.168.1.5:/devel/kernel/linux.git
     KERNEL_BRANCH=nanopi2-v4.4.y
 fi
@@ -20,7 +20,7 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_s5p6818
 cd sd-fuse_s5p6818
-wget http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/friendlycore-arm64-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xzf friendlycore-arm64-images.tgz
 
 git clone ${KERNEL_URL} --depth 1 -b ${KERNEL_BRANCH} kernel-s5p6818
