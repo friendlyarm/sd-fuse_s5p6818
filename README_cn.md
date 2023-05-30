@@ -61,7 +61,7 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 *注: 这里以friendlycore-arm64系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压friendlycore-arm64系统的[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher), 由于http服务器带宽的关系, wget命令可能会比较慢, 推荐从网盘上下载同名的文件:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master --single-branch sd-fuse_s5p6818
 cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
@@ -84,7 +84,7 @@ out/s5p6818-sd-friendly-core-xenial-4.4-arm64-YYYYMMDD.img
 *注: 这里以friendlycore-arm64系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像文件压缩包](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher), 这里需要下载friendlycore-arm64和eflasher系统的文件:
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master --single-branch sd-fuse_s5p6818
 cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
@@ -104,7 +104,7 @@ out/s5p6818-eflasher-friendly-core-xenial-4.4-arm64-YYYYMMDD.img
 *注: 这里以friendlycore-arm64系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master --single-branch sd-fuse_s5p6818
 cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
@@ -138,7 +138,7 @@ sudo ./build-rootfs-img.sh friendlycore-arm64/rootfs friendlycore-arm64
 *注: 这里以friendlycore-arm64系统为例进行说明*  
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master --single-branch sd-fuse_s5p6818
 cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
@@ -170,7 +170,7 @@ export KCFG=my_defconfig
 *注: 这里以friendlycore-arm64系统为例进行说明* 
 下载本仓库到本地, 然后下载并解压[分区镜像压缩包](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master --single-branch sd-fuse_s5p6818
 cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz

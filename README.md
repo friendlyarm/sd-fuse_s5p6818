@@ -61,7 +61,7 @@ If the files are not prepared in advance, the script will automatically download
 *Note: Here we use friendlycore-arm64 system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher), due to the bandwidth of the http server, we recommend downloading the file from the [NetDrive](https://download.friendlyelec.com/s5p6818):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master --single-branch sd-fuse_s5p6818
 cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
@@ -84,7 +84,7 @@ out/s5p6818-sd-friendly-core-xenial-4.4-arm64-YYYYMMDD.img
 *Note: Here we use friendlycore-arm64 system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher), here you need to download the friendlycore-arm64 and eflasher [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master --single-branch sd-fuse_s5p6818
 cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
@@ -104,7 +104,7 @@ out/s5p6818-eflasher-friendly-core-xenial-4.4-arm64-YYYYMMDD.img
 *Note: Here we use friendlycore-arm64 system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master --single-branch sd-fuse_s5p6818
 cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
@@ -139,7 +139,7 @@ Or build SD-to-eMMC image:
 *Note: Here we use friendlycore-arm64 system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher):
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master --single-branch sd-fuse_s5p6818
 cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
@@ -171,7 +171,7 @@ export KCFG=my_defconfig
 *Note: Here we use friendlycore-arm64 system as an example* 
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher)::
 ```
-git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master sd-fuse_s5p6818
+git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master --single-branch sd-fuse_s5p6818
 cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
