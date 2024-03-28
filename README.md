@@ -121,10 +121,15 @@ cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
 ```
-Unzip the rootfs.tar.gz exported in the previous section, or download the filesystem archive from the following URL and unzip it, the unzip command requires root privileges, so you need put sudo in front of the command:
+Extract the rootfs.tar.gz exported in the previous section, the tar command requires root privileges, so you need put sudo in front of the command:
+```
+mkdir friendlycore-arm64/rootfs
+sudo tar xvzfp rootfs.tar.gz -C friendlycore-arm64/rootfs --numeric-owner --same-owner
+```
+or download the filesystem archive from the following URL and extract it:
 ```
 wget http://112.124.9.243/dvdfiles/s5p6818/rootfs/rootfs-friendlycore.tgz
-sudo tar xzf rootfs-friendlycore.tgz
+sudo tar xvzfp rootfs-friendlycore.tgz --numeric-owner --same-owner
 ```
 Change something:
 ```
