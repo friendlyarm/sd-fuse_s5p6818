@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu
 
 # Copyright (C) Guangzhou FriendlyARM Computer Tech. Co., Ltd.
 # (http://www.friendlyarm.com)
@@ -35,6 +36,7 @@ case $1 in
 /dev/sd[a-z])
 	DEV_PART=${DEV_NAME}3
 	REMOVABLE=`cat /sys/block/${DEV_NAME}/removable` ;;
+
 /dev/mmcblk[0-9]* | /dev/loop[0-9]*)
 	DEV_PART=${DEV_NAME}p3
 	REMOVABLE=1 ;;
@@ -69,7 +71,7 @@ fi
 # ----------------------------------------------------------
 # Get target OS
 
-true ${TARGET_OS:=${2,,}}
+true ${TARGET_OS:=$(echo ${2,,}|sed 's/\///g')}
 PARTMAP=./${TARGET_OS}/partmap.txt
 
 case ${TARGET_OS} in
@@ -92,7 +94,6 @@ the image files are stored in a directory called "03_Partition image files", for
 ----------------
 Do you want to download it now via http? (Y/N):
 EOF
-
 	while read -r -n 1 -t 3600 -s USER_REPLY; do
 		if [[ ${USER_REPLY} = [Nn] ]]; then
 			echo ${USER_REPLY}
@@ -118,12 +119,9 @@ if [ $(id -u) -ne 0 ]; then
 	exit
 fi
 
-# ----------------------------------------------------------
-# Get host machine
-ARCH=
+HOST_ARCH=
 if uname -mpi | grep aarch64 >/dev/null; then
-#	EMMC=.emmc
-	ARCH=aarch64/
+    HOST_ARCH="aarch64/"
 fi
 
 # ----------------------------------------------------------
@@ -152,16 +150,11 @@ if [ ! -f ${TARGET_OS}/bl1-mmcboot.bin -a ! -f ${TARGET_OS}/2ndboot.bin ]; then
 	fusing_bin ${BOOT_DIR}/fip-nonsecure.img 3841
 fi
 
-#<Message Display>
-echo "---------------------------------"
-echo "Bootloader image is fused successfully."
-echo ""
-
 # ----------------------------------------------------------
 # partition card & fusing filesystem
 
-true ${FW_SETENV:=./tools/${ARCH}fw_setenv}
-true ${SD_UPDATE:=./tools/${ARCH}sd_update}
+true ${SD_UPDATE:=./tools/${HOST_ARCH}sd_update}
+true ${FW_SETENV:=./tools/${HOST_ARCH}fw_setenv}
 
 [[ -z $2 && ! -f ${PARTMAP} ]] && {
 	echo "abort, args2 = $2, partmap = ${PARTMAP}"
@@ -180,6 +173,7 @@ if [ ! -f ${PARTMAP} ]; then
 fi
 
 # set uboot env, like cmdline
+[ -e /var/lock/fw_printenv.lock ] && rm -f /var/lock/fw_printenv.lock
 if [ -f ./${TARGET_OS}/env.conf ]; then
 	${FW_SETENV} /dev/${DEV_NAME} -s ./${TARGET_OS}/env.conf
 elif [ -f ${BOOT_DIR}/${TARGET_OS}_env.conf ]; then
@@ -195,12 +189,13 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
-if [ -z ${ARCH} ]; then
-	partprobe /dev/${DEV_NAME} -s 2>/dev/null
+if ! command -v partprobe &>/dev/null; then
+	sudo apt-get install parted
 fi
+
+partprobe /dev/${DEV_NAME} -s 2>/dev/null
 if [ $? -ne 0 ]; then
 	echo "Warning: Re-reading the partition table failed"
-
 else
 	# optional: update uuid & label
 	case ${TARGET_OS} in
@@ -214,8 +209,5 @@ else
         ;;
 	esac
 fi
-
 echo "---------------------------------"
-echo "${TARGET_OS^} is fused successfully."
 echo "All done."
-

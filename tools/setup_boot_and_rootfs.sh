@@ -62,7 +62,7 @@ cp -af ${KMODULES_OUTDIR}/* ${ROOTFS_DIR}
 
 # firmware
 if [ ! -d ${ROOTFS_DIR}/lib/firmware/ap6212 ]; then
-	tar xzf ${PREBUILT}/firmware/lib.tgz -C ${ROOTFS_DIR}/
+        tar xzf ${PREBUILT}/firmware/lib.tgz -C ${ROOTFS_DIR}/
 fi
 
 exit 0

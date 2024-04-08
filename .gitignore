@@ -6,6 +6,7 @@
 # Normal rules
 #
 
+rootfs*
 /test/out
 /test/tmp
 /test/*.tgz

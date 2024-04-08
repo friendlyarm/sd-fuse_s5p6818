@@ -27,7 +27,7 @@ set -eu
 
 SOC=s5p6818
 IMG_SIZE=$1
-TARGET_OS=$2
+TARGET_OS=$(echo ${2,,}|sed 's/\///g')
 
 TOP=$PWD
 
@@ -66,7 +66,6 @@ eflasher)
     SRC_PARTMAP_TPL=${TOP}/prebuilt/partmap.template
     ;;
 esac
-
 DEST_PARTMAP_TXT=${TARGET_OS}/partmap.txt
 if [ -f ${SRC_PARTMAP_TPL} ]; then
     cp -avf ${SRC_PARTMAP_TPL} ${DEST_PARTMAP_TXT}
