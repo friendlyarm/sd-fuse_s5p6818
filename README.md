@@ -11,7 +11,7 @@ This repository is a bunch of scripts to build bootable SD card images for Frien
   
 ## Requirements
 * Supports x86_64 and aarch64 platforms
-* Recommended Host OS: Ubuntu 20.04 LTS (Bionic Beaver) 64-bit or Higher
+* Recommended Host OS: Ubuntu 20.04 LTS (Focal Fossa) 64-bit or Higher. Note: Build will fail on Ubuntu Bionic since package lz4 is required
 * For x86_64 user, it is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
 * Docker container: https://github.com/friendlyarm/docker-cross-compiler-novnc
 
@@ -132,10 +132,6 @@ or download the filesystem archive from the following URL and extract it:
 wget http://112.124.9.243/dvdfiles/s5p6818/rootfs/rootfs-friendlycore.tgz
 ./tools/extract-rootfs-tar.sh rootfs-friendlycore.tgz
 ```
-Change something:
-```
-sudo sh -c 'echo hello > friendlycore-arm64/rootfs/root/welcome.txt'
-```
 Make rootfs to img:
 ```
 sudo ./build-rootfs-img.sh friendlycore-arm64/rootfs friendlycore-arm64
@@ -146,9 +142,9 @@ Use the new rootfs.img to build SD card image:
 ```
 Or build SD-to-eMMC image:
 ```
-./mk-emmc-image.sh friendlycore-arm64
+./mk-emmc-image.sh friendlycore-arm64 autostart=yes
 ```
-If the image file is too large to be packaged, you can use an environment variable to reassign the image size, for example:
+If the image path is too big to pack, you can use the RAW_SIZE_MB environment variable to set a new image size. for example, you can set it to 16GB:
 ```
 RAW_SIZE_MB=16000 ./mk-sd-image.sh friendlycore-arm64
 RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlycore-arm64
@@ -162,14 +158,13 @@ cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
 ```
-Download the kernel source code from github, using the environment variable KERNEL_SRC to specify the local source code directory:
+Download the kernel source code from github:
 ```
-export KERNEL_SRC=$PWD/kernel
-git clone https://github.com/friendlyarm/linux -b nanopi2-v4.4.y --depth 1 ${KERNEL_SRC}
+git clone https://github.com/friendlyarm/linux -b nanopi2-v4.4.y --depth 1 kernel
 ```
 Customize the kernel configuration:
 ```
-cd $KERNEL_SRC
+cd kernel
 touch .scmversion
 make ARCH=arm nanopi3_linux_defconfig
 make ARCH=arm CROSS_COMPILE=arm-linux- menuconfig
@@ -178,11 +173,9 @@ cp defconfig ./arch/arm/configs/my_defconfig                  # Save the configu
 git add ./arch/arm/configs/my_defconfig
 cd -
 ```
-Specify the configuration of the kernel using the KCFG environment variable (KERNEL_SRC specifies the source directory), and compile the kernel with your configuration:
+To compile the kernel, use the environment variables KERNEL_SRC and KCFG to set the source code folder and the defconfig file:
 ```
-export KERNEL_SRC=$PWD/kernel
-export KCFG=my_defconfig
-./build-kernel.sh friendlycore-arm64
+KERNEL_SRC=kernel KCFG=my_defconfig ./build-kernel.sh friendlycore-arm64
 ```
 
 ### Compiling the u-boot
@@ -196,8 +189,7 @@ tar xvzf friendlycore-arm64-images.tgz
 ```
 Download the u-boot source code from github that matches the OS version, the environment variable UBOOT_SRC is used to specify the local source code directory:
 ```
-export UBOOT_SRC=$PWD/uboot
-git clone https://github.com/friendlyarm/u-boot -b nanopi2-v2016.01 --depth 1 ${UBOOT_SRC}
-./build-uboot.sh friendlycore-arm64
+git clone https://github.com/friendlyarm/u-boot -b nanopi2-v2016.01 --depth 1 uboot
+UBOOT_SRC=uboot ./build-uboot.sh friendlycore-arm64
 ```
 

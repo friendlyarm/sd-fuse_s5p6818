@@ -131,10 +131,6 @@ mkdir friendlycore-arm64/rootfs
 wget http://112.124.9.243/dvdfiles/s5p6818/rootfs/rootfs-friendlycore.tgz
 ./tools/extract-rootfs-tar.sh rootfs-friendlycore.tgz
 ```
-可以根据需要, 对文件系统目录进行更改, 例如:
-```
-sudo sh -c 'echo hello > friendlycore-arm64/rootfs/root/welcome.txt'
-```
 用以下命令将文件系统目录打包成 rootfs.img:
 ```
 sudo ./build-rootfs-img.sh friendlycore-arm64/rootfs friendlycore-arm64
@@ -145,9 +141,9 @@ sudo ./build-rootfs-img.sh friendlycore-arm64/rootfs friendlycore-arm64
 ```
 或生成SD-to-eMMC卡刷固件:
 ```
-./mk-emmc-image.sh friendlycore-arm64
+./mk-emmc-image.sh friendlycore-arm64 autostart=yes
 ```
-如果文件过大导致无法打包，可以使用环境变量重新指定固件大小，比如指定为16g:
+如果文件过大导致无法打包，可以使用RAW_SIZE_MB环境变量重新指定固件大小，比如指定为16g:
 ```
 RAW_SIZE_MB=16000 ./mk-sd-image.sh friendlycore-arm64
 RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlycore-arm64
@@ -161,14 +157,13 @@ cd sd-fuse_s5p6818
 wget http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xvzf friendlycore-arm64-images.tgz
 ```
-从github克隆内核源代码到本地, 用环境变量KERNEL_SRC来指定本地源代码目录:
+从github克隆内核源代码到本地:
 ```
-export KERNEL_SRC=$PWD/kernel
-git clone https://github.com/friendlyarm/linux -b nanopi2-v4.4.y --depth 1 ${KERNEL_SRC}
+git clone https://github.com/friendlyarm/linux -b nanopi2-v4.4.y --depth 1 kernel
 ```
 根据需要配置内核:
 ```
-cd $KERNEL_SRC
+cd kernel
 touch .scmversion
 make ARCH=arm nanopi3_linux_defconfig
 make ARCH=arm CROSS_COMPILE=arm-linux- menuconfig     # 根据需要改动配置
@@ -177,11 +172,9 @@ cp defconfig ./arch/arm/configs/my_defconfig                  # 保存配置 my_
 git add ./arch/arm/configs/my_defconfig
 cd -
 ```
-使用KCFG环境变量指定内核的配置 (KERNEL_SRC指定源代码目录), 使用你的配置编译内核:
+编译内核，使用环境变量KERNEL_SRC和KCFG分别指定源代码目录与内核的defconfig配置:
 ```
-export KERNEL_SRC=$PWD/kernel
-export KCFG=my_defconfig
-./build-kernel.sh friendlycore-arm64
+KERNEL_SRC=kernel KCFG=my_defconfig ./build-kernel.sh friendlycore-arm64
 ```
 
 ### 编译 u-boot
@@ -195,9 +188,8 @@ tar xvzf friendlycore-arm64-images.tgz
 ```
 从github克隆与OS版本相匹配的u-boot源代码到本地, 环境变量UBOOT_SRC用于指定本地源代码目录:
 ```
-export UBOOT_SRC=$PWD/uboot
-git clone https://github.com/friendlyarm/u-boot -b nanopi2-v2016.01 --depth 1 ${UBOOT_SRC}
-./build-uboot.sh friendlycore-arm64
+git clone https://github.com/friendlyarm/u-boot -b nanopi2-v2016.01 --depth 1 uboot
+UBOOT_SRC=uboot ./build-uboot.sh friendlycore-arm64
 ```
 
 ## Tips: 如何查询SD卡的设备文件名
