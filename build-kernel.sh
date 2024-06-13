@@ -20,6 +20,7 @@ set -eu
 
 true ${SOC:=s5p6818}
 true ${DISABLE_MKIMG:=0}
+true ${SKIP_DISTCLEAN:=0}
 true ${LOGO:=}
 true ${TARGET_OS:=$(echo ${1,,}|sed 's/\///g')}
 
@@ -141,7 +142,9 @@ else
 fi
 
 cd ${KERNEL_SRC}
-make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} distclean
+if [ ${SKIP_DISTCLEAN} -ne 1 ]; then
+	make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} distclean
+fi
 touch .scmversion
 make CROSS_COMPILE=${CROSS_COMPILE} ARCH=${ARCH} ${KCFG}
 if [ $? -ne 0 ]; then
