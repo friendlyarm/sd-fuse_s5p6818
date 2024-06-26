@@ -25,8 +25,8 @@ sd-fuse 使用不同的git分支来支持不同的内核版本, 当前支持的�
 * lubuntu
 * friendlycore
 * friendlycore-arm64
-* friendlycore-lite-focal
-* friendlycore-lite-focal-arm64
+* friendlycore-lite-noble
+* friendlycore-lite-noble-arm64
 * android
 * android7
 * friendlywrt

@@ -31,29 +31,12 @@ android)
         ;;
 android7)
         ;;
-friendlywrt)
+friendlywrt|friendlycore-arm64|friendlycore-lite-*-arm64)
         rsync -a --no-o --no-g ${PREBUILT}/ramdisk/arm64/ramdisk.img ${BOOT_DIR}
         ;;
-friendlycore)
+friendlycore-lite-*|friendlycore|lubuntu|eflasher)
         rsync -a --no-o --no-g ${PREBUILT}/ramdisk/armhf/ramdisk.img ${BOOT_DIR}
         ;;
-friendlycore-arm64)
-        rsync -a --no-o --no-g ${PREBUILT}/ramdisk/arm64/ramdisk.img ${BOOT_DIR}
-        ;;
-friendlycore-lite-focal)
-        rsync -a --no-o --no-g ${PREBUILT}/ramdisk/arm64/ramdisk.img ${BOOT_DIR}
-        ;;
-friendlycore-lite-focal-arm64)
-        rsync -a --no-o --no-g ${PREBUILT}/ramdisk/arm64/ramdisk.img ${BOOT_DIR}
-        ;;
-lubuntu)
-        rsync -a --no-o --no-g ${PREBUILT}/ramdisk/armhf/ramdisk.img ${BOOT_DIR}
-        ;;
-eflasher)
-        rsync -a --no-o --no-g ${PREBUILT}/ramdisk/armhf/ramdisk.img ${BOOT_DIR}
-        ;;
-*)
-    ROMFILE=
 esac
 
 # rootfs

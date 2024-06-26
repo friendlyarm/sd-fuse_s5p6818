@@ -1,7 +1,6 @@
 #!/bin/bash
 
-TARGET_OS=${1,,}
-
+TARGET_OS=$(echo ${1,,}|sed 's/\///g')
 case ${TARGET_OS} in
 android)
         ROMFILE=android-lollipop-images.tgz;;
@@ -9,14 +8,9 @@ android7)
         ROMFILE=android-nougat-images.tgz;;
 friendlywrt)
         ROMFILE=friendlywrt-images.tgz;;
-friendlycore)
-        ROMFILE=friendlycore-images.tgz;;
-friendlycore-arm64)
-        ROMFILE=friendlycore-arm64-images.tgz;;
-friendlycore-lite-focal)
-        ROMFILE=friendlycore-lite-focal-images.tgz;;
-friendlycore-lite-focal-arm64)
-        ROMFILE=friendlycore-lite-focal-arm64-images.tgz;;
+friendlycore*)
+        # don't cut TARGET_OS off
+        ROMFILE=${TARGET_OS}-images.tgz;;
 lubuntu)
         ROMFILE=lubuntu-desktop-images.tgz;;
 eflasher)
@@ -24,5 +18,4 @@ eflasher)
 *)
 	ROMFILE=
 esac
-
 echo $ROMFILE

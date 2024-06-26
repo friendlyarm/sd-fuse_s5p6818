@@ -28,7 +28,7 @@ BOARD=S5P6818/images-for-eflasher
 TARGET_OS=$(echo ${1,,}|sed 's/\///g')
 ROMFILE=`./tools/get_pkg_filename.sh ${TARGET_OS}`
 if [ -z ${ROMFILE} ]; then
-	echo "Usage: $0 <android|android7|friendlywrt|friendlycore|friendlycore-arm64|friendlycore-lite-focal|friendlycore-lite-focal-arm64|lubuntu|eflasher>"
+	echo "Usage: $0 <android|android7|friendlywrt|friendlycore|friendlycore-arm64|friendlycore-lite-noble|friendlycore-lite-noble-arm64|lubuntu|eflasher>"
 	exit 1
 fi
 

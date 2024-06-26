@@ -19,7 +19,7 @@ set -eu
 # http://www.gnu.org/licenses/gpl-2.0.html.
 
 function usage() {
-       echo "Usage: $0 <friendlycore-arm64|friendlycore|friendlycore-arm64|friendlycore-lite-focal|friendlycore-lite-focal-arm64|lubuntu|android|android7|friendlywrt|eflasher>"
+       echo "Usage: $0 <friendlycore-arm64|friendlycore|friendlycore-arm64|friendlycore-lite-noble|friendlycore-lite-noble-arm64|lubuntu|android|android7|friendlywrt|eflasher>"
        exit 0
 }
 
@@ -54,13 +54,7 @@ esac
 true ${RAW_SIZE_MB:=0}
 if [ $RAW_SIZE_MB -eq 0 ]; then
     case ${TARGET_OS} in
-    friendlycore-arm64)
-        RAW_SIZE_MB=7800 ;;
-    friendlycore)
-        RAW_SIZE_MB=7800 ;;
-    friendlycore-lite-focal)
-        RAW_SIZE_MB=7800 ;;
-    friendlycore-lite-focal-arm64)
+    friendlycore*)
         RAW_SIZE_MB=7800 ;;
     lubuntu)
         RAW_SIZE_MB=7800 ;;
@@ -82,16 +76,17 @@ if [ $# -eq 2 ]; then
 else
 	case ${TARGET_OS} in
 	friendlycore-arm64)
-		RAW_FILE=${SOC}-sd-friendly-core-xenial-4.4-arm64-$(date +%Y%m%d).img
+		RAW_FILE=${SOC}-sd-friendlycore-xenial-4.4-arm64-$(date +%Y%m%d).img
 		;;
 	friendlycore)
 		RAW_FILE=${SOC}-sd-friendlycore-xenial-4.4-armhf-$(date +%Y%m%d).img
 		;;
-	friendlycore-lite-focal)
-		RAW_FILE=${SOC}-sd-friendlycore-lite-focal-4.4-armhf-$(date +%Y%m%d).img
+	friendlycore-lite-*-arm64)
+		RAW_FILE=${SOC}-sd-${TARGET_OS%-*}-4.4-arm64-$(date +%Y%m%d).img
 		;;
-	 friendlycore-lite-focal-arm64)
-		RAW_FILE=${SOC}-sd-friendlycore-lite-focal-4.4-arm64-$(date +%Y%m%d).img
+	friendlycore-lite-*)
+		# don't cut TARGET_OS off
+		RAW_FILE=${SOC}-sd-${TARGET_OS}-4.4-armhf-$(date +%Y%m%d).img
 		;;
 	lubuntu)
 		RAW_FILE=${SOC}-sd-lubuntu-desktop-xenial-4.4-armhf-$(date +%Y%m%d).img
