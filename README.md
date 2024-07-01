@@ -26,8 +26,8 @@ For other kernel versions, please switch to the related git branch.
 * lubuntu
 * friendlycore
 * friendlycore-arm64
-* friendlycore-lite-noble
-* friendlycore-lite-noble-arm64
+* ubuntu-noble-core
+* ubuntu-noble-core-arm64
 * android
 * android7
 * friendlywrt

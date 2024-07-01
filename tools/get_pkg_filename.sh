@@ -8,7 +8,7 @@ android7)
         ROMFILE=android-nougat-images.tgz;;
 friendlywrt)
         ROMFILE=friendlywrt-images.tgz;;
-friendlycore*)
+friendlycore*|ubuntu-*-core*)
         # don't cut TARGET_OS off
         ROMFILE=${TARGET_OS}-images.tgz;;
 lubuntu)

@@ -31,6 +31,8 @@ rootfs*
 /eflasher
 /lubuntu*
 /friendlycore*
+/ubuntu-*
+/ubuntu-*-core
 /android*-images.tgz*
 /core-qte-images.tgz*
 /friendlycore-arm64-images.tgz*

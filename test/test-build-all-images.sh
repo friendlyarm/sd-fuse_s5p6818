@@ -20,11 +20,11 @@ tar xzf friendlycore-images.tgz
 wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/friendlycore-arm64-images.tgz
 tar xzf friendlycore-arm64-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/friendlycore-lite-noble-images.tgz
-tar xzf friendlycore-lite-noble-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/ubuntu-noble-core-images.tgz
+tar xzf ubuntu-noble-core-images.tgz
 
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/friendlycore-lite-noble-arm64-images.tgz
-tar xzf friendlycore-lite-noble-arm64-images.tgz
+wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/ubuntu-noble-core-arm64-images.tgz
+tar xzf ubuntu-noble-core-arm64-images.tgz
 
 wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/friendlywrt-images.tgz
 tar xzf friendlywrt-images.tgz
@@ -44,11 +44,11 @@ sudo ./mk-emmc-image.sh friendlycore
 sudo ./mk-sd-image.sh friendlycore-arm64
 sudo ./mk-emmc-image.sh friendlycore-arm64
 
-sudo ./mk-sd-image.sh friendlycore-lite-noble
-sudo ./mk-emmc-image.sh friendlycore-lite-noble
+sudo ./mk-sd-image.sh ubuntu-noble-core
+sudo ./mk-emmc-image.sh ubuntu-noble-core
 
-sudo ./mk-sd-image.sh friendlycore-lite-noble-arm64
-sudo ./mk-emmc-image.sh friendlycore-lite-noble-arm64
+sudo ./mk-sd-image.sh ubuntu-noble-core-arm64
+sudo ./mk-emmc-image.sh ubuntu-noble-core-arm64
 
 sudo ./mk-sd-image.sh friendlywrt
 sudo ./mk-emmc-image.sh friendlywrt
