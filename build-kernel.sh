@@ -92,7 +92,7 @@ check_and_install_package
 
 PARTMAP=./${TARGET_OS}/partmap.txt
 case ${TARGET_OS} in
-friendlycore* | ubuntu-*-core* lubuntu* | friendlywrt | eflasher)
+friendlycore* | ubuntu-*-core* | lubuntu* | friendlywrt | eflasher)
         ;;
 *)
         echo "Error: Unsupported target OS: ${TARGET_OS}"
