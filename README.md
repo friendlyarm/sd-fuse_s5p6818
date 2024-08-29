@@ -10,9 +10,9 @@ This repository is a bunch of scripts to build bootable SD card images for Frien
 *Read this in other languages: [简体中文](README_cn.md)*  
   
 ## Requirements
-* Supports x86_64 and aarch64 platforms
-* Recommended Host OS: Ubuntu 20.04 LTS (Focal Fossa) 64-bit or Higher. Note: Build will fail on Ubuntu Bionic since package lz4 is required
-* For x86_64 user, it is recommended to run this script to initialize the development environment: https://github.com/friendlyarm/build-env-on-ubuntu-bionic
+* Supports x86_64 and arm64 platforms (Note: requires A53 or higher on arm64)
+* Recommended Host OS: Ubuntu 20.04 LTS (Focal Fossa) 64-bit or Higher (Note: Build will fail on Ubuntu Bionic since package lz4 is required)
+* The script will prompt for the installation of necessary packages.
 * Docker container: https://github.com/friendlyarm/docker-cross-compiler-novnc
 
 ## Kernel Version Support
@@ -81,7 +81,6 @@ The following flashable image file will be generated, it is now ready to be used
 out/s5p6818-sd-friendly-core-xenial-4.4-arm64-YYYYMMDD.img
 ```
 
-
 ### Build your own SD-to-eMMC Image
 *Note: Here we use friendlycore-arm64 system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher), here you need to download the friendlycore-arm64 and eflasher [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher):
@@ -149,6 +148,7 @@ If the image path is too big to pack, you can use the RAW_SIZE_MB environment va
 RAW_SIZE_MB=16000 ./mk-sd-image.sh friendlycore-arm64
 RAW_SIZE_MB=16000 ./mk-emmc-image.sh friendlycore-arm64
 ```
+
 ### Compiling the Kernel
 *Note: Here we use friendlycore-arm64 system as an example*  
 Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher):
@@ -180,7 +180,7 @@ KERNEL_SRC=kernel KCFG=my_defconfig ./build-kernel.sh friendlycore-arm64
 
 ### Compiling the u-boot
 *Note: Here we use friendlycore-arm64 system as an example* 
-Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher)::
+Clone this repository locally, then download and uncompress the [pre-built images](http://112.124.9.243/dvdfiles/s5p6818/images-for-eflasher):
 ```
 git clone https://github.com/friendlyarm/sd-fuse_s5p6818 -b master --single-branch sd-fuse_s5p6818
 cd sd-fuse_s5p6818
@@ -192,4 +192,6 @@ Download the u-boot source code from github that matches the OS version, the env
 git clone https://github.com/friendlyarm/u-boot -b nanopi2-v2016.01 --depth 1 uboot
 UBOOT_SRC=uboot ./build-uboot.sh friendlycore-arm64
 ```
-
+### Common Issues and Solutions
+* Unable to boot after creating rootfs (Solution: The file permissions in the file system might be corrupted. Make sure to use the tools/extract-rootfs-tar.sh script to extract rootfs, and use the -cpzf options with the tar command for packaging.)
+* Process exits during creation (Solution: Ensure the machine has sufficient memory.)
