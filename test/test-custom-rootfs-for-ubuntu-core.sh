@@ -1,7 +1,13 @@
 #!/bin/bash
 set -eux
 
-HTTP_SERVER=112.124.9.243
+if [ -f "$(dirname "$(readlink -f "$0")")/../.use-local-r2" ]; then
+    CDN_URL=http://cdn.local/friendlyelec-cdn/os-images/s5p6818/images
+    ROOTFS_URL=http://cdn.local/friendlyelec-cdn/rootfs/s5p6818
+else
+    CDN_URL=https://downloads.friendlyelec.com/os-images/s5p6818/images
+    ROOTFS_URL=https://downloads.friendlyelec.com/rootfs/s5p6818
+fi
 KERNEL_URL=https://github.com/friendlyarm/linux
 KERNEL_BRANCH=nanopi2-v4.4.y
 
@@ -15,15 +21,17 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_s5p6818
 cd sd-fuse_s5p6818
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/ubuntu-noble-core-arm64-images.tgz
+wget ${CDN_URL}/ubuntu-noble-core-arm64-images.tgz
 tar xzf ubuntu-noble-core-arm64-images.tgz
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/emmc-flasher-images.tgz
+wget ${CDN_URL}/emmc-flasher-images.tgz
 tar xzf emmc-flasher-images.tgz
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/rootfs/rootfs-ubuntu-noble-core-arm64.tgz
+wget ${ROOTFS_URL}/rootfs-ubuntu-noble-core-arm64.tgz
+wget ${ROOTFS_URL}/rootfs-ubuntu-noble-core-arm64.tgz.sha256
+sha256sum -c rootfs-ubuntu-noble-core-arm64.tgz.sha256
 tar xzf rootfs-ubuntu-noble-core-arm64.tgz
 echo hello > ubuntu-noble-core-arm64/rootfs/root/welcome.txt
 (cd ubuntu-noble-core-arm64/rootfs/root/ && {
-	wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/ubuntu-noble-core-arm64-images.tgz -O deleteme.tgz
+	wget ${CDN_URL}/ubuntu-noble-core-arm64-images.tgz -O deleteme.tgz
 });
 ./build-rootfs-img.sh ubuntu-noble-core-arm64/rootfs ubuntu-noble-core-arm64
 

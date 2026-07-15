@@ -1,7 +1,11 @@
 #!/bin/bash
 set -eux
 
-HTTP_SERVER=112.124.9.243
+if [ -f "$(dirname "$(readlink -f "$0")")/../.use-local-r2" ]; then
+    CDN_URL=http://cdn.local/friendlyelec-cdn/os-images/s5p6818/images
+else
+    CDN_URL=https://downloads.friendlyelec.com/os-images/s5p6818/images
+fi
 KERNEL_URL=https://github.com/friendlyarm/linux
 KERNEL_BRANCH=nanopi2-v4.4.y
 
@@ -15,7 +19,7 @@ sudo rm -rf tmp/*
 cd tmp
 git clone ../../.git sd-fuse_s5p6818
 cd sd-fuse_s5p6818
-wget --no-proxy http://${HTTP_SERVER}/dvdfiles/S5P6818/images-for-eflasher/friendlycore-arm64-images.tgz
+wget ${CDN_URL}/friendlycore-arm64-images.tgz
 tar xzf friendlycore-arm64-images.tgz
 
 git clone ${KERNEL_URL} --depth 1 -b ${KERNEL_BRANCH} kernel-s5p6818
